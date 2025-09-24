@@ -11,7 +11,16 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
   <style>
-    /* Keep existing styling */
+    h1 {
+      font-size: 1.5rem;
+      margin: 0;
+    }
+
+    .logo {
+      height: 2.2em;
+      margin-right: 0.75em;
+    }
+
     body {
       background-color: #f5f7fa;
       font-family: "Segoe UI", sans-serif;
@@ -55,10 +64,48 @@
     .qr-preview {
       display: none;
     }
+
+    .badge-filter {
+      transition: transform 0.2s ease, background-color 0.3s ease;
+      cursor: pointer;
+    }
+
+    .badge-filter.animate {
+      animation: pulse 0.6s ease;
+    }
+
+    @keyframes pulse {
+      0%   { transform: scale(1); background-color: inherit; }
+      30%  { transform: scale(1.2); background-color: #cfe2ff; }
+      100% { transform: scale(1); background-color: inherit; }
+    }
+
+    .header-container {
+      background-color: #fff;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+    }
   </style>
 </head>
 <body>
-  <div class="header-container d-flex align-items-center">
+  <!--- Topbar volume -->
+  <div class="header-container">
+    <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 204.81 205.89">
+      <defs>
+        <style>
+          .cls-1 { fill: #009640; }
+          .cls-2 { fill: #0080c9; }
+        </style>
+      </defs>
+      <path class="cls-1"
+        d="m202.48,7.71c-2.68-3-20.39-3.88-25.59-3.74-1.78.05-2.45.8-2.8,2.13-.25.96-.87,6.51-1.3,16.81-.69,29.42-4.61,96.59-11.99,125.08-6.84,26.4-12.73,30.99-18.66,29.46-3.06-.79-8.59-3.05-12.56-5.09,0,0-67.27-29.35-73.77-31.04-7.08-1.83-9.74,1.35-10.93,5.94-1.29,4.97.77,34.86.36,43.53-.2,6.28-.6,13.32,6.29,15.1l101.68-.27c8.56,0,10.37-2.21,14.24-17.13,5.75-22.18,10.15-48.6,11.92-70.39,0,0,4.74-64.7,5.3-72.52.64-8.78,16-.72,17.87-4.72,3.41-7.3,2.61-30.15-.07-33.15Z" />
+      <path class="cls-2"
+        d="m147.06,98.57c4.89-3.65,11.47-8.64,12.95-14.65,3.3-13.44,4.18-60.25-9.65-68.77C132.41,4.09,37.07-7.18,31.73,5.84c-6.67,16.25,11.62,37.15,28.89,54.62l54.31,49.91c5.72,5.69,26.83,23.75,20.42,30.77-5.45,5.97-36.32-23.29-42.48-28.87l-45.65-44.39c-3.8-3.57-11.5-8.08-17.84-9.63-10.74-2.64-15.9,13.38-22.04,38.33-3.73,15.16-9.41,33.29-6.59,44.16,2.68,10.63,10.72,20.13,21.66,22.82,4.41,1.09,7.38-1.03,8.27-4.68,2.55-10.36-19.11-9.99-15.01-26.68,3.25-13.24,19.32-19.86,31.8-16.8,3.84.95,12.82,4.98,16.23,6.84l47.64,26.36c4.66,2.57,24.2,14.81,34.77,1.55,20.49-25.7-22.43-68.2-38.48-80.3-16.71-12.97-69.89-42.59-60.78-55.29,7.2-10.04,91.53,20.65,96.71,60.79.47,3.66-2.86,13.68-4.69,15.59,0,0-2.47,2.7.09,5.49,4.01,4.38,8.1,2.13,8.1,2.13Z" />    
+    </svg>
     <h1 class="me-auto">Generera etikett</h1>
     <a href="/dashboard" class="btn btn-outline-primary">Startsida</a>
   </div>
@@ -69,9 +116,9 @@
     </div>
     <div class="d-flex justify-content-between align-items-center">
       <div>
-        <span class="badge bg-success badge-filter" onclick="filterByCategory('Givarprov')">Givarprov</span>
-        <span class="badge bg-info text-dark badge-filter" onclick="filterByCategory('Dricksvatten')">Dricksvatten</span>
-        <span class="badge bg-light text-dark badge-filter" onclick="clearCategoryFilter()">Återställ filter</span>
+        <span class="badge bg-success badge-filter" onclick="filterByCategory('Givarprov', this)">Givarprov</span>
+        <span class="badge bg-info text-dark badge-filter" onclick="filterByCategory('Dricksvatten', this)">Dricksvatten</span>
+        <span class="badge bg-light text-dark badge-filter" onclick="clearCategoryFilter(this)">Återställ filter</span>
       </div>
       <button class="btn btn-primary" onclick="generateAndPrintQRCode()">Skriv ut etikett</button>
     </div>
@@ -90,7 +137,8 @@
 
     const categoryMap = {
       'GP': 'Givarprov',
-      'DV': 'Dricksvatten'
+      'DV': 'Dricksvatten',
+      'AVS': 'Avloppsvatten och slam'
     };
 
     function getCategory(formType) {
@@ -272,11 +320,19 @@
       renderForms(filtered);
     });
 
-    function filterByCategory(category) {
+    function animateBadge(badge) {
+      badge.classList.remove('animate');
+      void badge.offsetWidth;
+      badge.classList.add('animate');
+    }
+
+    function filterByCategory(category, badgeEl) {
+      animateBadge(badgeEl);
       renderForms(allForms.filter(form => form.category === category));
     }
 
-    function clearCategoryFilter() {
+    function clearCategoryFilter(badgeEl) {
+      animateBadge(badgeEl);
       renderForms(allForms);
     }
 
