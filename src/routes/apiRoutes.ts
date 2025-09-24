@@ -1,4 +1,3 @@
-// src/routes/apiRoutes.ts
 import { Router } from 'express';
 import { getFormById, submitForm } from '../controllers/formController';
 import { getRepository } from 'typeorm';
@@ -7,13 +6,8 @@ import { TypedEntries } from '../entity/TypedEntries';
 
 const router = Router();
 
-// Serve form data (JSON) based on formId
 router.get("/api/form/:formId", getFormById);
-
-// POST route for form submission
 router.post("/api/form/:formId/submit", submitForm);
-
-// GET route for form* retrieval 
 router.get('/api/entries', async (req, res) => {
     try {
         const typedEntriesRepo = getRepository(TypedEntries);
@@ -25,7 +19,7 @@ router.get('/api/entries', async (req, res) => {
     }
 });
 
-// GET route to retrieve a specific entry by ID - REDO
+// TODO: Needs rework, quite sloppy implemenation as-is.
 router.get('/api/entries/id=:formType-:formId', async (req, res) => {
     try {
         const { formType, formId } = req.params;
@@ -83,22 +77,18 @@ router.post('/api/typed-entry', async (req, res) => {
 
         const typedEntryRepo = getRepository(TypedEntries);
         
-        // Find entries with matching typeId
         const matchingEntries = await typedEntryRepo.find({
             where: { typeId: formType }
         });
         
-        // Initialize highest uniqueId
         let highestUniqueId = 0;
         
-        // If matching entries exist, find the highest uniqueId
+        // If matching entries exist, find the highest 'uniqueId'
         if (matchingEntries.length > 0) {
-            // Sort entries by uniqueId in descending order and get the highest
             matchingEntries.sort((a, b) => b.uniqueId - a.uniqueId);
             highestUniqueId = matchingEntries[0].uniqueId;
         }
         
-        // Create new entry
         const newEntry = new TypedEntries();
         newEntry.typeId = formType;
         newEntry.uniqueId = highestUniqueId + 1;
@@ -106,7 +96,6 @@ router.post('/api/typed-entry', async (req, res) => {
         newEntry.formComplete = false;
 
         const savedEntry = await typedEntryRepo.save(newEntry);
-    
         
         res.status(200).json({ 
             success: true, 
