@@ -137,12 +137,12 @@
     const categoryMap = {
       'GP': 'Givarprov',
       'DV': 'Dricksvatten',
-      'AVS': 'Avloppsvatten och slam'
+      'AV': 'Avloppsvatten och slam'
     };
 
     function getCategory(formType) {
       const prefix = formType.substring(0, 2).toUpperCase();
-      return categoryMap[prefix] || 'Other';
+      return categoryMap[prefix] || 'Övrigt';
     }
 
     async function loadFormTypes() {
@@ -157,10 +157,17 @@
     }
 
     function renderForms(forms) {
+      const categoryColors = {
+        'Givarprov': 'success',
+        'Dricksvatten': 'info',
+        'Avloppsvatten och slam': 'warning'
+      };
+
       const container = document.getElementById('form-type-container');
       container.innerHTML = '';
       forms.forEach(form => {
         if (form.formTypeEnabled) {
+          const color = categoryColors[form.category] || 'secondary';
           const cleanName = form.formName.replace(/\s+/g, '');
           const path = `/qr=${form.formType}-${cleanName}`;
           const card = document.createElement('div');
@@ -170,7 +177,7 @@
               <div class="card-body">
                 <h5 class="card-title">${form.formName}</h5>
                 <p class="card-text"><strong>Verk:</strong> ${form.formPosition}</p>
-                <span class="badge text-muted bg-${form.category === 'Givarprov' ? 'success' : form.category === 'Dricksvatten' ? 'info' : 'secondary'}">
+                <span class="badge text-muted bg-${color}">
                   ${form.category}
                 </span>
               </div>

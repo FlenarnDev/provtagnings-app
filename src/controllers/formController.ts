@@ -35,6 +35,9 @@ function getTemplateFormType(formID: string): string | null {
         case 'gp':
             return `givarprov-${formIDSplit[2].replace(/\d+/g, '')}`;
 
+        case 'av':
+            return 'avloppsvatten-slam';
+
         default:
             return null;
     }
@@ -47,7 +50,10 @@ function getFormTypeString(prefix: string): string {
         
         case 'gp':
             return 'Givarprov';
-        
+            
+        case 'av':
+            return 'Avloppsvatten och slam';
+            
         default:
             return 'undefined';
     }
@@ -61,7 +67,7 @@ export async function loadForms(): Promise<{ [key: string]: FormConfig }> {
 
     for (const form of formTypeEntities) {
         const formIDSplit = form.formType.split('-');
-        const templateFormType = getTemplateFormType(form.formType); // You might want to rename this param to match actual field
+        const templateFormType = getTemplateFormType(form.formType);
 
         if (templateFormType) {
             const templateForm = await loadTemplateForm(templateFormType);
@@ -119,16 +125,14 @@ async function validateFormData(formId: string, formData: any): Promise<{ valid:
         const value = formData[field.name];
 
         // Check if the field is missing & required
-
         if (!value && field.required) {
             errors.push(`${field.label} är obligatoriskt att fylla i.`);
             return;
         }
 
         if (field.required) {
-            // Type-specific validation
             if (field.type === "email") {
-                // Simple email format validation
+                // Simple email format validation - if heavy use, might need to improve.
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!emailRegex.test(value)) {
                     errors.push(`${field.label} måste vara en giltig email.`);

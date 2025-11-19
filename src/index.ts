@@ -35,9 +35,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      httpOnly: true,   // Ensures the cookie cannot be accessed via JavaScript
-      secure: false,    // Set to true in production (ensure HTTPS is used)
-      maxAge: 24 * 60 * 60 * 1000, // Session expires in 1 day
+      httpOnly: true,
+      secure: false, 
+      maxAge: 24 * 60 * 60 * 1000,
     },
   })
 );
@@ -55,20 +55,16 @@ app.use((req, res, next) => {
   next();
 });
 
-// Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
   res.redirect('/dashboard');
 });
 
-// Load routes
 app.use("/", adminRoutes, formRoutes, apiRoutes, qrRoutes);
 
-// Handle form submission (if needed as a separate route)
 app.post('/submit-form', submitForm);
 
-// Create a connection to the database and start the server
 createConnection(ormConfig)
   .then(() => {
     app.listen(3000, () => {
