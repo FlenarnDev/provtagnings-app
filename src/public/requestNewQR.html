@@ -114,9 +114,10 @@
     </div>
     <div class="d-flex justify-content-between align-items-center">
       <div>
-        <span class="badge bg-success badge-filter" onclick="filterByCategory('Givarprov', this)">Givarprov</span>
-        <span class="badge bg-info text-dark badge-filter" onclick="filterByCategory('Dricksvatten', this)">Dricksvatten</span>
-        <span class="badge bg-light text-dark badge-filter" onclick="clearCategoryFilter(this)">Återställ filter</span>
+        <span class="badge bg-warning text-muted badge-filter" onclick="filterByCategory('Avloppsvatten och slam', this)"> Avloppsvatten och slam</span>
+        <span class="badge bg-success text-muted badge-filter" onclick="filterByCategory('Givarprov', this)">Givarprov</span>
+        <span class="badge bg-info text-muted badge-filter" onclick="filterByCategory('Dricksvatten', this)">Dricksvatten</span>
+        <span class="badge bg-light text-muted badge-filter" onclick="clearCategoryFilter(this)">Återställ filter</span>
       </div>
       <button class="btn btn-primary" onclick="generateAndPrintQRCode()">Skriv ut etikett</button>
     </div>
@@ -169,7 +170,7 @@
               <div class="card-body">
                 <h5 class="card-title">${form.formName}</h5>
                 <p class="card-text"><strong>Verk:</strong> ${form.formPosition}</p>
-                <span class="badge bg-${form.category === 'Givarprov' ? 'success' : form.category === 'Dricksvatten' ? 'info text-dark' : 'secondary'}">
+                <span class="badge text-muted bg-${form.category === 'Givarprov' ? 'success' : form.category === 'Dricksvatten' ? 'info' : 'secondary'}">
                   ${form.category}
                 </span>
               </div>
@@ -336,5 +337,12 @@
 
     window.onload = loadFormTypes;
   </script>
+  <footer class="footer bg-light border-top">
+    <div class="container d-flex justify-content-start" style="padding: 0.25rem 0;">
+      <small class="text-muted" style="font-size: 0.75rem; line-height: 1;">
+        © Sörmland Vatten och Avfall AB&nbsp;&nbsp;&nbsp;&nbsp;Org.nr 556742-9302
+      </small>
+    </div>
+  </footer>
 </body>
 </html>

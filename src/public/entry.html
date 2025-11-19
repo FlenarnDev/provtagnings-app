@@ -119,7 +119,7 @@
 
         document.getElementById('entry-details').innerHTML = `
           <div class="mb-4">
-            <h4 class="fw-semibold">Provtyp: <span class="text-muted">${formTypeData.formPosition} - ${formTypeData.formName}</span></h4>
+            <h4 class="fw-semibold">Provtyp: <span class="text-dark">${formTypeData.formPosition} - ${formTypeData.formName}</span></h4>
             <p><strong>Intern ID:</strong> <span class="text-muted">${entry.typeId}-${entry.uniqueId}</span></p>
             <p><strong>Skapad:</strong> <span class="text-muted">${formattedDate}</span></p>
           </div>
@@ -149,5 +149,12 @@
 
     window.onload = loadEntryData;
   </script>
+  <footer class="footer bg-light border-top">
+    <div class="container d-flex justify-content-start" style="padding: 0.25rem 0;">
+      <small class="text-muted" style="font-size: 0.75rem; line-height: 1;">
+        © Sörmland Vatten och Avfall AB&nbsp;&nbsp;&nbsp;&nbsp;Org.nr 556742-9302
+      </small>
+    </div>
+  </footer> 
 </body>
 </html>
