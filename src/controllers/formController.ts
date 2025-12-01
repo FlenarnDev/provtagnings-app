@@ -35,9 +35,13 @@ function getTemplateFormType(formID: string): string | null {
         case 'gp':
             return `givarprov-${formIDSplit[2].replace(/\d+/g, '')}`;
 
-        case 'av':
-            return 'avloppsvatten-slam';
-
+        case 'av': {
+            const subString = formIDSplit[2].replace(/\d+/g, '');
+            return subString === 'extra'
+                ? 'avloppsvatten-slam-extra'
+                : 'avloppsvatten-slam';
+        }
+            
         default:
             return null;
     }
@@ -74,9 +78,11 @@ export async function loadForms(): Promise<{ [key: string]: FormConfig }> {
             const formTypeString = getFormTypeString(formIDSplit[0]);
 
             let formName = form.formName;
-            if (formIDSplit[2] && /^[A-Za-z]/.test(formIDSplit[2])) {
+
+            // Excess?
+            /*if (formIDSplit[2] && /^[A-Za-z]/.test(formIDSplit[2])) {
                 formName = `${formIDSplit[2].toUpperCase()} - ${form.formName}`;
-            }
+            }*/
 
             forms[form.formType] = {
                 fields: templateForm.fields,
