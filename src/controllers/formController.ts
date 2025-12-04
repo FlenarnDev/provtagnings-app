@@ -35,7 +35,7 @@ function getTemplateFormType(formID: string): string | null {
         case 'gp':
             return `givarprov-${formIDSplit[2].replace(/\d+/g, '')}`;
 
-        case 'av': {
+            case 'av': {
             const subString = formIDSplit[2].replace(/\d+/g, '');
             return subString === 'extra'
                 ? 'avloppsvatten-slam-extra'
